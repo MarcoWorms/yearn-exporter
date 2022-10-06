@@ -5,7 +5,7 @@ volumes:
   cache: {}
 
 networks:
-  infra_yearn-exporter:
+  yearn-exporter_infra_stack:
     external: true
 
 x-envs: &envs
@@ -79,8 +79,8 @@ services:
       <<: *apy-envs
       <<: *revenues-envs
     networks:
-      - infra_yearn-exporter
+      - yearn-exporter_infra_stack
     external_links:
-      - infra_postgres_1:postgres
-      - infra_victoria-metrics_1:victoria-metrics
+      - yearn-exporter_infra_postgres_1:postgres
+      - yearn-exporter_infra_victoria-metrics_1:victoria-metrics
     restart: on-failure

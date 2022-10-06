@@ -70,7 +70,7 @@ tvl-build:
 
 # postgres, grafana, victoria
 infra:
-	docker-compose --file services/dashboard/docker-compose.infra.yml --project-directory . -p infra up --detach
+	docker-compose --file services/dashboard/docker-compose.infra.yml --project-directory . -p yearn-exporter_infra up --detach
 
 # exporter specifc scripts
 single-network: infra
@@ -83,7 +83,7 @@ all-networks: infra
 	done
 
 down: get-network-name
-	$(eval filter = $(if $(filter),$(filter),$(if $(NETWORK),$(NETWORK),exporter)))
+	$(eval filter = $(if $(filter),$(filter),$(if $(NETWORK),$(NETWORK),yearn-exporter)))
 	echo "stopping containers for filter: $(filter)"
 	docker ps -a -q --filter="name=$(filter)" | xargs -L 1 docker rm -f 2> /dev/null || true
 	echo "running containers:"
@@ -94,7 +94,7 @@ build:
 	$(dashboards_command) build $(BUILD_FLAGS)
 
 logs: get-network-name
-	$(eval filter = $(if $(filter),$(filter),$(if $(NETWORK),$(NETWORK),exporter)))
+	$(eval filter = $(if $(filter),$(filter),$(if $(NETWORK),$(NETWORK),yearn-exporter)))
 	$(eval since = $(if $(since),$(since),30s))
 	docker ps -a -q --filter="name=$(filter)"| xargs -L 1 -P $$(docker ps --filter="name=$(filter)" | wc -l) docker logs --since $(since) -ft
 
@@ -155,7 +155,7 @@ rebuild: down build up
 all: rebuild
 scratch: clean-volumes build up
 clean-volumes: down
-	$(eval filter = $(if $(filter),$(filter),$(if $(NETWORK),$(NETWORK),exporter)))
+	$(eval filter = $(if $(filter),$(filter),$(if $(NETWORK),$(NETWORK),yearn-exporter)))
 	docker volume ls -q --filter="name=$(filter)" | xargs -L 1 docker volume rm 2> /dev/null || true
 clean-exporter-volumes: clean-volumes
 dashboards-clean-volumes: clean-exporter-volumes

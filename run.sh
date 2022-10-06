@@ -46,18 +46,19 @@ else
 fi
 
 export SENTRY_RELEASE=$(git rev-parse --short HEAD)
+export PROJECT_NAME="yearn-exporter_$NETWORK"
 
 IFS=', ' read -r -a commands <<< "$COMMANDS"
 #TODO add --detach
 for CMD in "${commands[@]}"; do
   NAME=$(echo $CMD | sed -e 's/\//_/g')
   # TODO handle multiple containers with the same name more gracefully
-  CONTAINER_NAME=${NETWORK}_${NAME}_1
+  CONTAINER_NAME=${PROJECT_NAME}_${NAME}_1
   docker rm -f $CONTAINER_NAME 2> /dev/null || true
   docker-compose \
     --file services/dashboard/docker-compose.yml \
     --project-directory . \
-    -p $NETWORK run \
+    -p $PROJECT_NAME run \
     --name $CONTAINER_NAME \
     --detach \
     exporter $CMD
