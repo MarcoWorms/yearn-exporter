@@ -191,7 +191,7 @@ def main():
 
 
 def _export(data, file_name, s3_path):
-    print(json.dumps(data))
+    print(json.dumps(data, indent=4))
 
     with open(file_name, "w+") as f:
         json.dump(data, f)
